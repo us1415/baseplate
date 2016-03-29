@@ -35,9 +35,7 @@ realclean: clean
 
 tests:
 	nosetests
-	nosetests3
 	sphinx-build -M doctest docs/ build/
-	sphinx-build -M spelling docs/ build/
 
 develop:
 	python2 setup.py develop
