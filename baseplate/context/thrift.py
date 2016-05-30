@@ -5,9 +5,9 @@ from __future__ import unicode_literals
 
 import contextlib
 import functools
-import inspect
 
-from thrift.transport.TTransport import TTransportException
+from thriftpy.thrift import TClient
+from thriftpy.transport import TTransportException
 
 from . import ContextFactory
 from ..retry import RetryPolicy
@@ -44,24 +44,6 @@ class ThriftContextFactory(ContextFactory):
         return PooledClientProxy(self.client_cls, self.pool, root_span, name)
 
 
-def _enumerate_service_methods(client):
-    """Return an iterable of service methods from a generated Iface class."""
-    ifaces_found = 0
-
-    # python3 drops the concept of unbound methods, so they're just plain
-    # functions and we have to account for that here. see:
-    # https://stackoverflow.com/questions/17019949/why-is-there-a-difference-between-inspect-ismethod-and-inspect-isfunction-from-p
-    predicate = lambda x: inspect.isfunction(x) or inspect.ismethod(x)
-
-    for base_cls in inspect.getmro(client):
-        if base_cls.__name__ == "Iface":
-            for name, _ in inspect.getmembers(base_cls, predicate):
-                yield name
-            ifaces_found += 1
-
-    assert ifaces_found > 0, "class is not a thrift client; it has no Iface"
-
-
 class PooledClientProxy(object):
     """A proxy which acts like a thrift client but uses a connection pool."""
 
@@ -73,10 +55,6 @@ class PooledClientProxy(object):
         self.namespace = namespace
         self.retry_policy = retry_policy or RetryPolicy.new(attempts=1)
 
-        for name in _enumerate_service_methods(client_cls):
-            setattr(self, name, functools.partial(
-                self._call_thrift_method, name))
-
     @contextlib.contextmanager
     def retrying(self, **policy):
         yield PooledClientProxy(
@@ -87,10 +65,15 @@ class PooledClientProxy(object):
             retry_policy=RetryPolicy.new(**policy),
         )
 
+    def __getattr__(self, name):
+        if name not in self.client_cls.thrift_services:
+            raise AttributeError
+        return functools.partial(self._call_thrift_method, name)
+
     def _call_thrift_method(self, name, *args, **kwargs):
         trace_name = "{}.{}".format(self.namespace, name)
-        last_error = None
 
+        last_error = None
         for _ in self.retry_policy:
             try:
                 with self.root_span.make_child(trace_name) as span:

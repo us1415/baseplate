@@ -26,7 +26,7 @@ extras_require = {
     ],
 
     "thrift": [
-        "thrift",
+        "thriftpy",
     ],
 
     "pyramid": [
@@ -56,8 +56,6 @@ setup(
         "bin/baseplate-script{:d}".format(sys.version_info.major),
     ],
 
-    # the thrift compiler must be able to find baseplate.thrift to build
-    # services which extend BaseplateService.
     package_data={
         "baseplate.thrift": [
             "*.thrift"
@@ -65,10 +63,6 @@ setup(
     },
     zip_safe=False,
     entry_points={
-        "distutils.commands": [
-            "build_thrift = baseplate.integration.thrift.command:BuildThriftCommand",
-        ],
-
         "console_scripts": [
             "baseplate-healthcheck{:d} = baseplate.server.healthcheck:run_healthchecks".format(sys.version_info.major),
         ],

@@ -11,20 +11,23 @@ import urllib
 
 import requests
 
+from thriftpy.thrift import TClient
+
 from baseplate.config import Endpoint
 from baseplate.requests import add_unix_socket_support
-from baseplate.thrift import BaseplateService
 from baseplate.thrift_pool import _make_protocol
+from baseplate.integration.thrift import import_thriftfile
+
+baseplate_thrift = import_thriftfile("baseplate", "thrift/baseplate.thrift")
 
 
 TIMEOUT = 30  # seconds
 
 
 def check_thrift_service(endpoint):
-    protocol = _make_protocol(endpoint)
-    protocol.trans.getTransport().setTimeout(TIMEOUT * 1000.)
+    protocol = _make_protocol(endpoint, timeout=TIMEOUT)
     protocol.trans.open()
-    client = BaseplateService.Client(protocol)
+    client = TClient(baseplate_thrift.BaseplateService, protocol)
     assert client.is_healthy(), "service indicated unhealthiness"
 
 
