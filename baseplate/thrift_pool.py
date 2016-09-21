@@ -24,7 +24,7 @@ import logging
 import socket
 import time
 
-from thrift.protocol import THeaderProtocol
+from thrift.protocol import TBinaryProtocol
 from thrift.protocol.TProtocol import TProtocolException
 from thrift.Thrift import TApplicationException
 from thrift.transport import TSocket
@@ -44,7 +44,7 @@ def _make_protocol(endpoint):
         trans = TSocket.TSocket(unix_socket=endpoint.address)
     else:
         raise Exception("unsupported endpoint family %r" % endpoint.family)
-    return THeaderProtocol.THeaderProtocol(trans)
+    return TBinaryProtocol.TBinaryProtocol(trans)
 
 
 class ThriftConnectionPool(object):

@@ -69,15 +69,7 @@ class ThriftTests(unittest.TestCase):
 
         self.processor.process(self.iprot, self.oprot, self.server_context)
 
-        self.assertEqual(self.observer.on_root_span_created.call_count, 1)
-
-        context, root_span = self.observer.on_root_span_created.call_args[0]
-        self.assertEqual(root_span.trace_id, 1234)
-        self.assertEqual(root_span.parent_id, None)
-        self.assertEqual(root_span.id, 1234)
-
-        self.assertTrue(self.root_observer.on_start.called)
-        self.assertTrue(self.root_observer.on_stop.called)
+        self.assertEqual(self.observer.on_root_span_created.call_count, 0)
 
     def test_with_headers(self):
         client_memory_trans = TMemoryBuffer()
@@ -95,12 +87,4 @@ class ThriftTests(unittest.TestCase):
 
         self.processor.process(self.iprot, self.oprot, self.server_context)
 
-        self.assertEqual(self.observer.on_root_span_created.call_count, 1)
-
-        context, root_span = self.observer.on_root_span_created.call_args[0]
-        self.assertEqual(root_span.trace_id, 1234)
-        self.assertEqual(root_span.parent_id, 2345)
-        self.assertEqual(root_span.id, 3456)
-
-        self.assertTrue(self.root_observer.on_start.called)
-        self.assertTrue(self.root_observer.on_stop.called)
+        self.assertEqual(self.observer.on_root_span_created.call_count, 0)

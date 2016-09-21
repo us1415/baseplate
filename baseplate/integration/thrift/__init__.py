@@ -47,32 +47,13 @@ class BaseplateProcessorEventHandler(TProcessorEventHandler):
 
     def getHandlerContext(self, fn_name, server_context):
         context = RequestContext()
-
-        trace_info = None
-        headers = server_context.iprot.trans.get_headers()
-        try:
-            trace_info = TraceInfo.from_upstream(
-                trace_id=int(headers[b"Trace"]),
-                parent_id=int(headers[b"Parent"]),
-                span_id=int(headers[b"Span"]),
-            )
-        except (KeyError, ValueError):
-            pass
-
-        context.headers = headers
-        context.trace = self.baseplate.make_root_span(
-            context,
-            name=fn_name,
-            trace_info=trace_info,
-        )
         return context
 
     def postRead(self, handler_context, fn_name, args):
         self.logger.debug("Handling: %r", fn_name)
-        handler_context.trace.start()
 
     def handlerDone(self, handler_context, fn_name, result):
-        handler_context.trace.stop()
+        pass
 
     def handlerError(self, handler_context, fn_name, exception):
         self.logger.exception("Unexpected exception in %r.", fn_name)

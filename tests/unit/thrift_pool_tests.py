@@ -25,7 +25,7 @@ class MakeProtocolTests(unittest.TestCase):
             socket.AF_INET, ("localhost", 1234))
         protocol = thrift_pool._make_protocol(endpoint)
 
-        socket_transport = protocol.trans.getTransport()
+        socket_transport = protocol.trans
         self.assertFalse(socket_transport._unix_socket)
 
     def test_unix(self):
@@ -33,7 +33,7 @@ class MakeProtocolTests(unittest.TestCase):
             socket.AF_UNIX, "/tmp/socket")
         protocol = thrift_pool._make_protocol(endpoint)
 
-        socket_transport = protocol.trans.getTransport()
+        socket_transport = protocol.trans
         self.assertTrue(socket_transport._unix_socket)
 
     def test_unknown(self):
