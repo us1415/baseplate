@@ -1,3 +1,10 @@
+midas-baseplate (0.13.0~midas~1) trusty; urgency=medium
+
+  * Creating Baseplate fork to use with Midas
+  * Swap THeaderProtocol for TBinaryProtocol in code
+
+ -- Krishnan Chandra <krishnan.chandra@reddit.com>  Thu, 22 Sep 2016 23:23:22 +0000
+
 baseplate (0.13.0) trusty; urgency=medium
 
   * allow config.Optional options to have key missing from INI too
