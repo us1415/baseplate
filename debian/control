@@ -20,20 +20,20 @@ Standards-Version: 3.9.5
 X-Python-Version: >= 2.7
 X-Python3-Version: >= 3.4
 
-Package: python-baseplate
-Architecture: all
+Package: python-baseplate-midas
+Architecture: amd64
 Depends: fbthrift-compiler, python-fbthrift, ${python:Depends}, ${misc:Depends}
-Suggests: python-baseplate-doc
+Suggests: python-baseplate-midas-doc
 Description: convenient service framework (Python 2)
 
-Package: python3-baseplate
-Architecture: all
+Package: python3-baseplate-midas
+Architecture: amd64
 Depends: fbthrift-compiler, python3-fbthrift, ${python3:Depends}, ${misc:Depends}
-Suggests: python-baseplate-doc
+Suggests: python-baseplate-midas-doc
 Description: convenient service framework (Python 3)
 
-Package: python-baseplate-doc
-Architecture: all
+Package: python-baseplate-midas-doc
+Architecture: amd64
 Section: doc
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}
 Description: convenient service framework - API documentation
