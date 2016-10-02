@@ -147,6 +147,10 @@ class Baseplate(object):
         from .diagnostics.metrics import MetricsBaseplateObserver
         self.register(MetricsBaseplateObserver(metrics_client))
 
+    def configure_sentry(self, raven):  # pragma: nocover
+        from .diagnostics.sentry import SentryBaseplateObserver
+        self.register(SentryBaseplateObserver(raven))
+
     def add_to_context(self, name, context_factory):  # pragma: nocover
         """Add an attribute to each request's context object.
 
